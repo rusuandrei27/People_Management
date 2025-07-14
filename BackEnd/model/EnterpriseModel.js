@@ -22,3 +22,5 @@ class EnterpriseModel {
 }
 
 module.exports = EnterpriseModel;
+
+console.log("1234")
