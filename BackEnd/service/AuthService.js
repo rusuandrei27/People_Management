@@ -4,9 +4,10 @@ const UserModel = require('../model/UserModel');
 const EmailService = require('./EmailService');
 
 const jwtSecret = process.env.JWT_SECRET;
+const sentOTPMails = new Map();
 
 class AuthService {
-    async register(firstName, lastName, email, phone, password) {
+    async sendAuthEmail(firstName, lastName, email, phone, password) {
         if (!firstName) { throw new Error('Invalid first name!'); }
         if (!lastName) { throw new Error('Invalid last name!'); }
         if (!email) { throw new Error('Invalid email!'); }
@@ -29,7 +30,20 @@ class AuthService {
 
         const otp = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
-        EmailService.sendMail(email, otp);
+        const isEmailSuccessfullySent = EmailService.sendMail(email, otp);
+
+        if (!isEmailSuccessfullySent) {
+            return new Error("An error was encountered. PLease try again!");
+        }
+
+        // const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minute în milisecunde
+
+        // sentOTPMails.set(email, {
+        //     otp,
+        //     expiresAt
+        // });
+
+        // console.log(sentOTPMails);
 
 
 
