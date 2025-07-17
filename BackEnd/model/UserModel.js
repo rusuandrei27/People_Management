@@ -2,31 +2,20 @@ const db = require('../config/db');
 
 class UserModel {
 
-    constructor(firstName, lastName, email, phone, password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-        this.password = password;
-    }
-
-    async createUser() {
+    async insertUser(userData) {
+        const { firstName, lastName, email, phone, password } = userData;
         const sql = 'INSERT INTO user (firstName, lastName, email, phone, password) VALUES (?, ?, ?, ?, ?)';
-        const [result] = await db.execute(sql, [this.firstName, this.lastName, this.email, this.phone, this.password]);
-        console.log(result)
-        return result.insertId;
+        return await db.execute(sql, [firstName, lastName, email, phone, password]);
     }
 
-    async findUserByEmail() {
+    async findUserByEmail(email) {
         const sql = 'SELECT idUser FROM user WHERE email = ?';
-        const [rows] = await db.execute(sql, [this.email]);
-        return rows[0];
+        return await db.execute(sql, [email]);
     }
 
-    async findUserByPhone() {
+    async findUserByPhone(phone) {
         const sql = 'SELECT idUser FROM user WHERE phone = ?';
-        const [rows] = await db.execute(sql, [this.phone]);
-        return rows[0];
+        return await db.execute(sql, [phone]);
     }
 }
 
