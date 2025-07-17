@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Men Code - OTP</title>
+
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.1.4/css/dx.light.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.1.4/js/dx.all.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="otp.css" />
+</head>
+
+<body class="dark-bg">
+    <div id="waitingPanel"></div>
+    <div class="otp-container">
+        <div class="otp-container">
+            <div class="otp-card">
+                <h1 class="logo">MEN CODE</h1>
+                <p class="subtitle">Employee Management</p>
+
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="\d*" />
+                    <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="\d*" />
+                    <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="\d*" />
+                    <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="\d*" />
+                    <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="\d*" />
+                    <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="\d*" />
+                </div>
+
+                <button class="form-button" id="confirmOtp">Confirm</button>
+
+                <p class="back-link"><a href="../register/register.html">← Back</a></p>
+                <p class="footer-credit">Powered by Rusu Software</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="otp.js"></script>
+</body>
+
+</html>
