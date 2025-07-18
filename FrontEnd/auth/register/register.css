@@ -1,4 +1,3 @@
-/* Reset & font */
 * {
     margin: 0;
     padding: 0;
@@ -115,19 +114,16 @@ body::before {
 
 #gdpr .dx-checkbox-text {
     color: #fff;
-    /* Make the checkbox label white */
     font-size: 14px;
     vertical-align: middle;
 }
 
 #gdpr .dx-checkbox-icon {
     background-color: #fff;
-    /* White box for the check */
     border: 1px solid #888;
     border-radius: 4px;
 }
 
 #gdpr .dx-checkbox-checked .dx-checkbox-icon {
     background-color: #ccc;
-    /* Change check background when selected */
 }

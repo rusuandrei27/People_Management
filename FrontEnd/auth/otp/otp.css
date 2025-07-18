@@ -142,6 +142,20 @@ body::before {
     opacity: 0.6;
 }
 
+.dx-button {
+    background-color: #ffffff !important;
+    color: #000 !important;
+    border-radius: 10px !important;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dx-button:hover {
+    background-color: #ddd !important;
+    color: #000 !important;
+    cursor: pointer;
+}
+
 /* Responsive adjustments */
 @media (max-width: 480px) {
     .otp-box {
