@@ -7,9 +7,9 @@
 
 body {
     height: 100vh;
-    background: linear-gradient(120deg, #000 0%, #222 100%);
+    background: linear-gradient(120deg, #000000 0%, #222 100%);
     background-size: 200% 200%;
-    animation: backgroundShift 3.5s ease-in-out infinite;
+    animation: backgroundShift 3s ease-in-out infinite;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,24 +22,10 @@ body::before {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.12) 0%, transparent 60%),
-        radial-gradient(circle at 20% 80%, rgba(32, 29, 29, 0.106) 0%, transparent 65%);
+        radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.059) 40%, transparent 65%),
+        radial-gradient(circle at 20% 80%, rgba(100, 100, 100, 0.12) 0%, rgba(100, 100, 100, 0.04) 40%, transparent 65%);
     pointer-events: none;
     z-index: 0;
-}
-
-@keyframes backgroundShift {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
 }
 
 .login-container {
