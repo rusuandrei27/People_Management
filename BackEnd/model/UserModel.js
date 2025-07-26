@@ -9,12 +9,12 @@ class UserModel {
     }
 
     async findUserByEmail(email) {
-        const sql = 'SELECT idUser FROM user WHERE email = ?';
+        const sql = 'SELECT idUser, email, password FROM user WHERE email = ?';
         return await db.execute(sql, [email]);
     }
 
     async findUserByPhone(phone) {
-        const sql = 'SELECT idUser FROM user WHERE phone = ?';
+        const sql = 'SELECT idUser, email, password FROM user WHERE phone = ?';
         return await db.execute(sql, [phone]);
     }
 }

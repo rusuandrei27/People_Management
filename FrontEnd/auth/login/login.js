@@ -28,7 +28,7 @@ $(function () {
         text: "Login",
         type: "default",
         width: "100%",
-        onClick: function () {
+        onClick: async function () {
             const fields = [
                 $("#email").dxTextBox("instance"),
                 $("#password").dxTextBox("instance")
@@ -46,6 +46,19 @@ $(function () {
                 DevExpress.ui.notify("Please complete required fields!", "warning", 2000);
                 return;
             }
+
+            const userData = {
+                email: fields[0].option("value"),
+                password: fields[1].option("value")
+            };
+
+            const loginResponse = await fetch("http://localhost:3000/api/auth/login", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
 
         }
     });

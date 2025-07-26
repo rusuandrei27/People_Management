@@ -55,19 +55,17 @@ $("#register-btn").dxButton({
 
         const otpJSON = await otpResponse.json();
 
-        if (!otpResponse || !otpResponse.ok || otpResponse.error) {
+        if (!otpJSON || otpJSON.length < 1 || !otpJSON[0] || !otpJSON[0].insertId) {
             $("#waitingPanel").dxLoadPanel("instance").option("visible", false);
             DevExpress.ui.notify(otpJSON.error, "error", 2000);
             $("#register-btn").dxButton("instance").option("disabled", false);
             return;
         }
 
-        sessionStorage.removeItem("userData");
+        userData["idUser"] = otpJSON[0].insertId;
+        sessionStorage.setItem("userData", JSON.stringify(userData));
 
-        DevExpress.ui.notify("Your account has been successfully created. You are now redirected to login page!", "warning", 3000);
-
-        setTimeout(function () {
-            window.location.href = '../login/login.html';
-        }, 2000);
+        DevExpress.ui.notify("Your account has been successfully created!", "success", 3500);
+        window.location.href = '../chooseEnterprise/chooseEnterprise.html';
     }
 });

@@ -1,6 +1,7 @@
 const AuthService = require('../service/AuthService');
 const EmailService = require('../service/EmailService');
 const DateService = require('../service/DateService');
+const bcrypt = require('bcrypt');
 
 const sentOTPMails = new Map();
 
@@ -13,24 +14,29 @@ class AuthController {
                 return res.status(400).json({ error: "Invalid email!" });
             }
 
+            if (!phone) {
+                return res.status(400).json({ error: "Invalid phone!" });
+            }
+
             const userByEmail = await AuthService.getUserByEmail(email);
-            if (userByEmail && userByEmail.length > 0) {
-                return res.status(400).json({ error: "There is already an account with this email" });;
+            if ((userByEmail && userByEmail.length > 0) || userByEmail instanceof Error) {
+                return res.status(400).json({ error: "There is already an account with this email" });
             }
 
             const userByPhone = await AuthService.getUserByPhone(phone);
-            if (userByPhone && userByPhone.length > 0) {
-                return res.status(400).json({ error: "There is already an account with this phone" });;
+            if ((userByPhone && userByPhone.length > 0) || userByPhone instanceof Error) {
+                return res.status(400).json({ error: "There is already an account with this phone" });
             }
 
             const emailSent = await EmailService.sendRegisterEmail(email);
             if (emailSent instanceof Error) {
-                return res.status(400).json({ error: emailSent.message });;
+                return res.status(400).json({ error: emailSent.message });
             }
 
             const [otp, expiresAt] = emailSent;
 
             sentOTPMails.set(email, { otp, expiresAt });
+            console.log(sentOTPMails)
 
             res.status(200).json({ message: 'Register Mail Sent Successfully' });
         } catch (error) {
@@ -73,10 +79,71 @@ class AuthController {
             }
 
             const insertedUserInfo = await AuthService.insertUser(req.body);
+            sentOTPMails.delete(email);
+
             if (insertedUserInfo && insertedUserInfo[0] && insertedUserInfo[0].insertId) {
-                sentOTPMails.delete(email);
-                return res.status(200).json({ message: 'User successfully inserted!' });
+                return res.status(200).json(insertedUserInfo);
             }
+
+            res.status(400).json({ error: 'User could not be inserted!' });
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+    async assignUserToEnterprise(req, res) {
+        try {
+            const { idUser, idEnterprise } = req.body;
+
+            if (!idUser) {
+                return res.status(400).json({ error: "Invalid user!" });
+            }
+
+            if (!idEnterprise) {
+                return res.status(400).json({ error: "Invalid enterprise!" });
+            }
+
+            const userAndEnterprise = await AuthService.getUserAndEnterprise(idUser, idEnterprise);
+            if ((userAndEnterprise && userAndEnterprise.length > 0) || userAndEnterprise instanceof Error) {
+                return res.status(400).json({ error: "User is already assigned to this enterprise!" });
+            }
+
+            const insertedLinkUserEnterprise = await AuthService.assignUserToEnterprise(req.body);
+            if (insertedLinkUserEnterprise && insertedLinkUserEnterprise[0] && insertedLinkUserEnterprise[0].insertId) {
+                return res.status(200).json(insertedLinkUserEnterprise);
+            }
+
+            res.status(400).json({ error: 'User could not associated to this enterprise' });
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+    async login(req, res) {
+        try {
+            const { email, password } = req.body;
+
+            if (!email || !password) {
+                return res.status(400).json({ error: "You must complete email and password!" });
+            }
+
+            const userByEmail = await AuthService.getUserByEmail(email);
+            if (!userByEmail || userByEmail.length != 1) {
+                return res.status(400).json({ error: "The email or password is not valid!" });
+            }
+
+            const isCorrectPassword = await bcrypt.compare(password, userByEmail[0].password);
+
+            if (!isCorrectPassword) {
+                return res.status(400).json({ error: "The email or password is not valid!" });
+            }
+
+
+
+
+
+
+
 
             res.status(400).json({ message: 'User could not be inserted!' });
         } catch (error) {
