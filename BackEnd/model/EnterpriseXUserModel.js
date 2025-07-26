@@ -2,36 +2,36 @@ const db = require('../config/db');
 
 class EnterpriseXUserModel {
 
-    constructor(idUser, idEnterprise, isActive, idRole) {
-        this.idUser = idUser;
-        this.idEnterprise = idEnterprise;
-        this.isActive = isActive;
-        this.idRole = idRole;
+    // async findUserAndEnterpriseByEmail(email, idEnterprise) {
+    //     const sql = `select exu.idUser, exu.idEnterprise, exu.isActive from enterpriseXuser as eXu
+    //                  inner join user as u on u.idUser = eXu.idUser
+    //                  where u.email = ? and eXu.idEnterprise = ? ;`;
+
+    //     return await db.execute(sql, [email, idEnterprise]);
+    // }
+
+    // async findUserAndEnterpriseByPhone(phone, idEnterprise) {
+    //     const sql = `select exu.idUser, exu.idEnterprise, exu.isActive from enterpriseXuser as eXu
+    //                  inner join user as u on u.idUser = eXu.idUser
+    //                  where u.phone = ? and eXu.idEnterprise = ? ;`;
+
+    //     return await db.execute(sql, [phone, idEnterprise]);
+    // }
+
+
+    async findUserAndEnterprise(idUser, idEnterprise) {
+        const sql = `select idUser, idEnterprise, isActive from enterpriseXuser
+                     where idUser = ? and idEnterprise = ? ;`;
+
+        return await db.execute(sql, [idUser, idEnterprise]);
     }
 
-    async findActiveUsersByEnterpriseId() {
-        const sql = `SELECT * FROM enterpriseXuser as eXu
-                     INNER JOIN user as u on u.idUser = eXu.idUser
-                     where eXu.isActive = True and eXu.idEnterprise = ? ;`;
+    async insertUserToEnterprise(idUser, idEnterprise) {
+        const sql = `insert into enterpriseXuser (idUser, idEnterprise, idRole) values (?, ?, (SELECT idRole FROM role WHERE name = 'Employee'));`;
 
-        const [result] = await db.execute(sql, [this.idEnterprise]);
-        return result;
+        return await db.execute(sql, [idUser, idEnterprise]);
     }
 
-    async findUsersByEnterpriseId() {
-        const sql = `SELECT * FROM enterpriseXuser as eXu
-                     INNER JOIN user as u on u.idUser = eXu.idUser
-                     where eXu.idEnterprise = ? ;`;
-
-        const [result] = await db.execute(sql, [this.idEnterprise]);
-        return result;
-    }
-
-    async findEnterpriseByName() {
-        const sql = 'SELECT idEnterprise FROM enterprise WHERE name = ?';
-        const [rows] = await db.execute(sql, [this.name]);
-        return rows[0];
-    }
 }
 
 module.exports = EnterpriseXUserModel;

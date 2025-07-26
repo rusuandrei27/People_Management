@@ -95,6 +95,7 @@ $("#register-btn").dxButton({
     type: "default",
     width: "100%",
     onClick: async function () {
+        sessionStorage.removeItem("userData");
         const fields = [
             $("#name").dxTextBox("instance"),
             $("#lastname").dxTextBox("instance"),

@@ -76,17 +76,6 @@ body::before {
     margin-bottom: 15px;
 }
 
-.register-link {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #888;
-}
-
-.register-link a {
-    color: #ffffff;
-    text-decoration: underline;
-}
-
 .dx-button {
     background-color: #ffffff !important;
     color: #000 !important;
@@ -108,22 +97,73 @@ body::before {
     opacity: 0.6;
 }
 
-#gdpr {
-    margin: 15px 0;
+
+
+
+
+.dx-dialog .dx-overlay-content {
+    background-color: #1a1a1a;
+    /* Softer black, not bright white */
+    color: white;
+    border: none !important;
+    /* Remove border */
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+    /* Nice deep shadow */
+    padding: 20px;
 }
 
-#gdpr .dx-checkbox-text {
-    color: #fff;
+/* === Title Bar === */
+.dx-popup-title {
+    display: flex;
+    justify-content: center;
+    /* Centers horizontally */
+    align-items: center;
+    /* Centers vertically (optional) */
+    font-weight: bold;
+    color: white;
+    font-size: 16px;
+    background-color: transparent;
+    border-bottom: none;
+    padding: 10px 0;
+}
+
+/* === Message Content === */
+.custom-dialog-message {
     font-size: 14px;
-    vertical-align: middle;
+    text-align: center;
+    padding: 10px 0;
 }
 
-#gdpr .dx-checkbox-icon {
+/* === Button Row === */
+.dx-dialog-buttons {
+    background-color: transparent;
+    border-top: none;
+    justify-content: center;
+}
+
+/* === Buttons === */
+.dx-dialog-buttons .dx-button {
+    border-radius: 8px;
+    font-weight: bold;
+    margin: 0 5px;
+}
+
+/* Confirm Button */
+.dx-button-mode-contained {
     background-color: #fff;
-    border: 1px solid #888;
-    border-radius: 4px;
+    color: #000;
 }
 
-#gdpr .dx-checkbox-checked .dx-checkbox-icon {
-    background-color: #ccc;
+.dx-button-mode-contained:hover {
+    background-color: #e0e0e0;
+}
+
+/* Cancel Button */
+.dx-button-mode-text {
+    color: #ccc;
+}
+
+.dx-button-mode-text:hover {
+    color: white;
 }
