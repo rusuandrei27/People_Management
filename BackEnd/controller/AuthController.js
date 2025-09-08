@@ -1,6 +1,7 @@
 const AuthService = require('../service/AuthService');
 const EmailService = require('../service/EmailService');
 const DateService = require('../service/DateService');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const sentOTPMails = new Map();
@@ -36,7 +37,6 @@ class AuthController {
             const [otp, expiresAt] = emailSent;
 
             sentOTPMails.set(email, { otp, expiresAt });
-            console.log(sentOTPMails)
 
             res.status(200).json({ message: 'Register Mail Sent Successfully' });
         } catch (error) {
@@ -82,7 +82,7 @@ class AuthController {
             sentOTPMails.delete(email);
 
             if (insertedUserInfo && insertedUserInfo[0] && insertedUserInfo[0].insertId) {
-                return res.status(200).json(insertedUserInfo);
+                return res.status(200).json({ "idUser": insertedUserInfo[0].insertId });
             }
 
             res.status(400).json({ error: 'User could not be inserted!' });
@@ -110,7 +110,7 @@ class AuthController {
 
             const insertedLinkUserEnterprise = await AuthService.assignUserToEnterprise(req.body);
             if (insertedLinkUserEnterprise && insertedLinkUserEnterprise[0] && insertedLinkUserEnterprise[0].insertId) {
-                return res.status(200).json(insertedLinkUserEnterprise);
+                return res.status(200).json({ "enterpriseXuserId": insertedLinkUserEnterprise[0].insertId });
             }
 
             res.status(400).json({ error: 'User could not associated to this enterprise' });
@@ -138,14 +138,27 @@ class AuthController {
                 return res.status(400).json({ error: "The email or password is not valid!" });
             }
 
+            const userAndEnterpriseByEmail = await AuthService.getUserAndEnterpriseByEmail(email);
+            if (!userAndEnterpriseByEmail || userAndEnterpriseByEmail.length < 1) {
+                return res.status(200).json({ "idUser": userByEmail[0].idUser, "nextPage": "chooseEnterprise" });
+            }
 
+            const filteredUserAndEnterpriseByEmail = userAndEnterpriseByEmail.filter(item => item.isActive == true);
+            if (!filteredUserAndEnterpriseByEmail || filteredUserAndEnterpriseByEmail.length < 1) {
+                return res.status(200).json({ "idUser": userByEmail[0].idUser, "nextPage": "waitingActivation" });
+            }
 
+            const jwtSecret = process.env.JWT_SECRET;
+            const token = jwt.sign({ id: filteredUserAndEnterpriseByIdUser[0].idUser, email: email }, jwtSecret, {
+                expiresIn: '24h'
+            });
 
+            return res.status(200).json({
+                "idUser": filteredUserAndEnterpriseByIdUser[0].idUser,
+                "token": token,
+                "nextPage": "enterprise"
+            });
 
-
-
-
-            res.status(400).json({ message: 'User could not be inserted!' });
         } catch (error) {
             res.status(400).json({ error: error.message });
         }

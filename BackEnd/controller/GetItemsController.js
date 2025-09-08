@@ -5,7 +5,7 @@ class GetItemsController {
         try {
             const enterprises = await GetItemsService.getAllEnterprises();
             if (enterprises && enterprises.length > 0) {
-                return res.status(200).json({ enterprises });
+                return res.status(200).json(enterprises);
             }
 
             return res.status(400).json({ error: "There are no available enterprises!" });;
