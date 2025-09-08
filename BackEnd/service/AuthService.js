@@ -2,8 +2,6 @@ const bcrypt = require('bcrypt');
 const UserModel = require('../model/UserModel');
 const EnterpriseXUserModel = require('../model/EnterpriseXUserModel');
 
-const jwtSecret = process.env.JWT_SECRET;
-
 class AuthService {
     constructor() {
         this.enterpriseXUserModel = new EnterpriseXUserModel();
@@ -45,29 +43,16 @@ class AuthService {
         }
     }
 
-    // async findUserAndEnterpriseByEmail(email, idEnterprise) {
-    //     if (!email || !idEnterprise) {
-    //         return new Error("User email or enterprise is not valid!");
-    //     }
+    async getUserAndEnterpriseByEmail(email) {
+        if (!email) {
+            return new Error("User invalid!");
+        }
+        const userAndEnterpriseByIdUser = await this.enterpriseXUserModel.findUserAndEnterpriseByEmail(email);
 
-    //     const userByEmailAndEnterprise = await this.enterpriseXUserModel.findUserAndEnterpriseByEmail(email, idEnterprise);
-
-    //     if (userByEmailAndEnterprise && userByEmailAndEnterprise.length > 0 && userByEmailAndEnterprise[0] && userByEmailAndEnterprise[0].length > 0) {
-    //         return userByEmailAndEnterprise[0];
-    //     }
-    // }
-
-    // async findUserAndEnterpriseByPhone(phone, idEnterprise) {
-    //     if (!phone || !idEnterprise) {
-    //         return new Error("User phone or enterprise is not valid!");
-    //     }
-
-    //     const userByPhoneAndEnterprise = await this.enterpriseXUserModel.findUserAndEnterpriseByPhone(phone, idEnterprise);
-
-    //     if (userByPhoneAndEnterprise && userByPhoneAndEnterprise.length > 0 && userByPhoneAndEnterprise[0] && userByPhoneAndEnterprise[0].length > 0) {
-    //         return userByPhoneAndEnterprise[0];
-    //     }
-    // }
+        if (userAndEnterpriseByIdUser && userAndEnterpriseByIdUser.length > 0 && userAndEnterpriseByIdUser[0] && userAndEnterpriseByIdUser[0].length > 0) {
+            return userAndEnterpriseByIdUser[0];
+        }
+    }
 
     async insertUser(userData) {
         const { firstName, lastName, email, phone, password } = userData;

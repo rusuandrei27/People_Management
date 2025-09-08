@@ -9,7 +9,14 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME,
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    typeCast: function (field, next) {
+        if (field.type === 'BIT' && field.length === 1) {
+            const bit = field.buffer();
+            return bit[0] === 1;
+        }
+        return next();
+    }
 });
 
 module.exports = pool;

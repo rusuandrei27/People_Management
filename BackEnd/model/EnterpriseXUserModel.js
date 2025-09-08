@@ -18,6 +18,13 @@ class EnterpriseXUserModel {
     //     return await db.execute(sql, [phone, idEnterprise]);
     // }
 
+    async findUserAndEnterpriseByEmail(email) {
+        const sql = `select exu.idUser, exu.idEnterprise, exu.isActive from enterpriseXuser as exu
+                     inner join user as u on u.idUser = exu.idUser
+                     where u.email = ? ;`;
+
+        return await db.execute(sql, [email]);
+    }
 
     async findUserAndEnterprise(idUser, idEnterprise) {
         const sql = `select idUser, idEnterprise, isActive from enterpriseXuser

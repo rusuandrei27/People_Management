@@ -1,3 +1,5 @@
+import api from "../../ApiClient.js";
+
 let savedUserData = sessionStorage.getItem("userData");
 
 if (savedUserData) {
@@ -71,8 +73,7 @@ $("#password").dxTextBox({
 $("#gdpr").dxCheckBox({
     text: "I agree to the processing of personal data (GDPR)",
     value: savedUserData && savedUserData.gdpr ? true : false,
-    width: "100%",
-    value: savedUserData && savedUserData.gdpr ? savedUserData.gdpr : false
+    width: "100%"
 }).dxValidator({
     validationRules: [{
         type: 'required',
@@ -95,7 +96,6 @@ $("#register-btn").dxButton({
     type: "default",
     width: "100%",
     onClick: async function () {
-        sessionStorage.removeItem("userData");
         const fields = [
             $("#name").dxTextBox("instance"),
             $("#lastname").dxTextBox("instance"),
@@ -123,8 +123,9 @@ $("#register-btn").dxButton({
             return;
         }
 
-        $("#register-btn").dxButton("instance").option("disabled", true);
-        $("#waitingPanel").dxLoadPanel("instance").option("visible", true);
+        blockUserInterface();
+
+        sessionStorage.removeItem("userData");
 
         const userData = {
             firstName: fields[0].option("value"),
@@ -135,21 +136,22 @@ $("#register-btn").dxButton({
             gdpr: gdprChecked
         };
 
-        const emailResponse = await fetch("http://localhost:3000/api/auth/sendRegisterEmail", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userData)
-        });
+        const emailResponse = await api.post("api/auth/sendRegisterEmail", userData);
 
-        const emailJSON = await emailResponse.json();
+        unblockUserInterface();
 
-        $("#waitingPanel").dxLoadPanel("instance").option("visible", false);
+        if (!emailResponse) {
+            DevExpress.ui.notify("Server is currently unavailable. Please contact platform administrator!", "error", 2000);
+            return;
+        }
 
-        if (!emailResponse || !emailResponse.ok || emailJSON.error) {
-            DevExpress.ui.notify(emailJSON.error, "error", 2000);
-            $("#register-btn").dxButton("instance").option("disabled", false);
+        if (emailResponse.errorMessage) {
+            DevExpress.ui.notify(emailResponse.errorMessage, "error", 2000);
+            return;
+        }
+
+        if (!emailResponse.ok) {
+            DevExpress.ui.notify("The server can not be reached. Please contact your system administrator!", "error", 2000);
             return;
         }
 
@@ -157,3 +159,13 @@ $("#register-btn").dxButton({
         window.location.href = '../otp/otp.html';
     }
 });
+
+function blockUserInterface() {
+    $("#register-btn").dxButton("instance").option("disabled", true);
+    $("#waitingPanel").dxLoadPanel("instance").option("visible", true);
+}
+
+function unblockUserInterface() {
+    $("#register-btn").dxButton("instance").option("disabled", false);
+    $("#waitingPanel").dxLoadPanel("instance").option("visible", false);
+}

@@ -1,3 +1,5 @@
+import api from "../../ApiClient.js";
+
 $('.otp-box').on('input', function () {
     this.value = this.value.replace(/[^0-9]/g, '');
     if (this.value.length === 1) {
@@ -20,24 +22,22 @@ $("#register-btn").dxButton({
     type: "default",
     width: "90%",
     onClick: async function () {
-        $("#register-btn").dxButton("instance").option("disabled", true);
         let otp = '';
         $('.otp-box').each((index, item) => {
             otp += $(item).val();
         });
 
         if (otp.length != 6) {
-            $("#register-btn").dxButton("instance").option("disabled", false);
             DevExpress.ui.notify("Please complete the otp code!", "warning", 2000);
             return;
         }
 
-        $("#waitingPanel").dxLoadPanel("instance").option("visible", true);
+        blockUserInterface();
 
         let userData = sessionStorage.getItem("userData");
 
         if (!userData) {
-            $("#waitingPanel").dxLoadPanel("instance").option("visible", false);
+            unblockUserInterface();
             DevExpress.ui.notify("The register session expired. Please try again!", "warning", 2000);
             return;
         }
@@ -45,27 +45,46 @@ $("#register-btn").dxButton({
         userData = JSON.parse(userData);
         userData["otp"] = otp;
 
-        const otpResponse = await fetch("http://localhost:3000/api/auth/insertUser", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userData)
-        });
+        const otpResponse = await api.post("api/auth/insertUser", userData);
 
-        const otpJSON = await otpResponse.json();
+        unblockUserInterface();
 
-        if (!otpJSON || otpJSON.length < 1 || !otpJSON[0] || !otpJSON[0].insertId) {
-            $("#waitingPanel").dxLoadPanel("instance").option("visible", false);
-            DevExpress.ui.notify(otpJSON.error, "error", 2000);
-            $("#register-btn").dxButton("instance").option("disabled", false);
+        if (!otpResponse) {
+            DevExpress.ui.notify("The register proccess could not be completed. Please try again!", "warning", 2000);
             return;
         }
 
-        userData["idUser"] = otpJSON[0].insertId;
+        if (otpResponse.errorMessage) {
+            DevExpress.ui.notify(otpResponse.errorMessage, "warning", 2000);
+            return;
+        }
+
+        if (!otpResponse.ok) {
+            DevExpress.ui.notify("The server could not be reached. Please try again!", "warning", 2000);
+            return;
+        }
+
+        const idUser = otpResponse.data ? otpResponse.data.idUser : null;
+
+        if (!idUser) {
+            DevExpress.ui.notify("The user could not be created. Please try again!", "warning", 2000);
+            return;
+        }
+
+        userData["idUser"] = idUser;
         sessionStorage.setItem("userData", JSON.stringify(userData));
 
-        DevExpress.ui.notify("Your account has been successfully created!", "success", 3500);
-        window.location.href = '../chooseEnterprise/chooseEnterprise.html';
+        DevExpress.ui.notify("Your account has been successfully created!", "success", 2000);
+        window.location.href = '../chooseEnterprise/chooseEnterprise.html'
     }
 });
+
+function blockUserInterface() {
+    $("#register-btn").dxButton("instance").option("disabled", true);
+    $("#waitingPanel").dxLoadPanel("instance").option("visible", true);
+}
+
+function unblockUserInterface() {
+    $("#register-btn").dxButton("instance").option("disabled", false);
+    $("#waitingPanel").dxLoadPanel("instance").option("visible", false);
+}
