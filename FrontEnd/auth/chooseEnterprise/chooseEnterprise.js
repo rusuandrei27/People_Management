@@ -64,6 +64,7 @@ async function applyFormLogic() {
     blockUserInterface();
 
     const enterprises = await api.get("getItems/getAllEnterprises");
+    console.log(enterprises)
 
     unblockUserInterface();
 
@@ -72,8 +73,8 @@ async function applyFormLogic() {
         return;
     }
 
-    if (enterprises.error) {
-        DevExpress.ui.notify(enterprises.error, "error", 2000);
+    if (enterprises.errorMessage) {
+        DevExpress.ui.notify(enterprises.errorMessage, "error", 2000);
         return;
     }
 
