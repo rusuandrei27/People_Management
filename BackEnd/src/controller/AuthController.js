@@ -1,4 +1,5 @@
-const AuthService = require('../service/AuthService');
+const scriptName = "AuthController.js";
+const AuthService = require('../service/UserService');
 const EmailService = require('../service/EmailService');
 const DateService = require('../service/DateService');
 const jwt = require('jsonwebtoken');
@@ -9,6 +10,8 @@ const sentOTPMails = new Map();
 class AuthController {
     async sendRegisterEmail(req, res) {
         try {
+            log(scriptName, "Function 'sendRegisterEmail' started with body: " + JSON.stringify(body));
+
             const { email, phone } = req.body;
 
             if (!email) {
@@ -20,12 +23,14 @@ class AuthController {
             }
 
             const userByEmail = await AuthService.getUserByEmail(email);
-            if ((userByEmail && userByEmail.length > 0) || userByEmail instanceof Error) {
+            if (!userByEmail || userByEmail.error || userByEmail.length > 0) {
+                log(scriptName, "Another user was found for this email: " + JSON.stringify(email) + " | You can not register same email twice!");
                 return res.status(400).json({ error: "There is already an account with this email" });
             }
 
             const userByPhone = await AuthService.getUserByPhone(phone);
-            if ((userByPhone && userByPhone.length > 0) || userByPhone instanceof Error) {
+            if (!userByPhone || userByPhone.error || userByPhone.length > 0) {
+                log(scriptName, "Another user was found for this phone: " + JSON.stringify(phone) + " | You can not register same phone twice!");
                 return res.status(400).json({ error: "There is already an account with this phone" });
             }
 

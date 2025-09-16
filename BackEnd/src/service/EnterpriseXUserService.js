@@ -1,0 +1,74 @@
+const serviceName = "EnterpriseXUserService.js";
+const EnterpriseXUserModel = require('../model/EnterpriseXUserModel');
+const ServiceResponse = require('./ServiceResponse');
+
+class EnterpriseXUserService {
+    constructor() {
+        this.EnterpriseXUserModel = new EnterpriseXUserModel();
+    }
+
+    async getUserAndEnterprise(idUser, idEnterprise) {
+        if (!idUser || !idEnterprise) {
+            return ServiceResponse.fail("Invalid user or enterprise!");
+        }
+
+        try {
+            const userAndEnterprise = await this.EnterpriseXUserModel.getUserAndEnterprise(idUser, idEnterprise);
+
+            if (userAndEnterprise && userAndEnterprise.length > 0 && userAndEnterprise[0] && userAndEnterprise[0].length > 0) {
+                return ServiceResponse.success(userAndEnterprise[0]);
+            }
+
+            return ServiceResponse.success([]);
+
+        } catch (error) {
+            log(serviceName, "Error occured extracting user and enterprise: " + JSON.stringify(error.message));
+            return ServiceResponse.fail("Invalid user or enterprise!");
+        }
+    }
+
+    async getUserAndEnterpriseByEmail(email) {
+        if (!email) {
+            return ServiceResponse.fail("Invalid email");
+        }
+
+        try {
+            const userAndEnterpriseByIdUser = await this.EnterpriseXUserModel.getUserAndEnterpriseByEmail(email);
+
+            if (userAndEnterpriseByIdUser && userAndEnterpriseByIdUser.length > 0 && userAndEnterpriseByIdUser[0] && userAndEnterpriseByIdUser[0].length > 0) {
+                return ServiceResponse.success(userAndEnterpriseByIdUser[0]);
+            }
+
+            return ServiceResponse.success([]);
+
+        } catch (e) {
+            log(serviceName, "Error occured extracting user and enterprise by email: " + JSON.stringify(error.message));
+            return ServiceResponse.fail("Invalid email!");
+        }
+    }
+
+    async insertUserXEnterprise(userData) {
+        if (!userData) {
+            return ServiceResponse.fail("Invalid user informations!");
+        }
+
+        const { idUser, idEnterprise } = userData;
+        if (!idUser) { return ServiceResponse.fail("Invalid user!"); }
+        if (!idEnterprise) { return ServiceResponse.fail("Invalid enterprise!"); }
+
+        try {
+            const insertedUserEnterpriseLink = await this.EnterpriseXUserModel.insertUserXEnterprise(idUser, idEnterprise);
+            if (!insertedUserEnterpriseLink || insertedUserEnterpriseLink.length < 1 || !insertedUserEnterpriseLink[0] || !insertedUserEnterpriseLink[0].insertId) {
+                return ServiceResponse.fail("User can not be associated to the enterprise. PLease try again!");
+            }
+
+            return ServiceResponse.success(insertedUserEnterpriseLink);
+
+        } catch (error) {
+            log(serviceName, "Error occured assigning user and enterprise for idUser: " + JSON.stringify(idUser) + " | and email: " + JSON.stringify(email) + " | error: " + JSON.stringify(error.message));
+            return ServiceResponse.fail("User can not be assiged to this enterprise!");
+        }
+    }
+}
+
+module.exports = new EnterpriseXUserService();
