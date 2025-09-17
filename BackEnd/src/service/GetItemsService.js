@@ -18,7 +18,7 @@ class GetItemsService {
             return ServiceResponse.fail("No available enterprises!");
 
         } catch (error) {
-            log(scriptName, "Error encountered when extracting enterprises: " + JSON.stringify(error.message));
+            log(scriptName, "Error encountered extracting enterprises: " + JSON.stringify(error.message));
             return ServiceResponse.fail("Error extracting enterprises!");
         }
     }

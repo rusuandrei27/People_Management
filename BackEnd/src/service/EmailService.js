@@ -20,14 +20,12 @@ class EmailService {
         }
 
         try {
-            const emailSent = await transporter.sendMail({
+            await transporter.sendMail({
                 from: from,
                 to: to,
                 subject: subject,
                 text: text
             });
-
-            console.log(emailSent)
 
             return true;
 
@@ -52,9 +50,9 @@ class EmailService {
         const from = "Men Code Stefan cel Mare";
         const to = email;
         const subject = 'Men Code Email Confirmation';
-        const message = 'Hi! This is your confirmation code: ' + JSON.stringify(otp) + ". Thank you for registering in Men Code Employee Management Application. Be aware: your confirmation code expires at: " + JSON.stringify(expiresAt);
+        const text = 'Hi! This is your confirmation code: ' + JSON.stringify(otp) + ". Thank you for registering in Men Code Employee Management Application. Be aware: your confirmation code expires at: " + JSON.stringify(expiresAt);
 
-        const isEmailSuccessfullySent = await EmailService.sendMail({ from, to, subject, message });
+        const isEmailSuccessfullySent = await EmailService.sendMail({ from, to, subject, text });
 
         if (!isEmailSuccessfullySent) {
             return ServiceResponse.fail("Email could not be sent!");

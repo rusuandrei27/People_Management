@@ -20,7 +20,7 @@ class UserService {
                 return ServiceResponse.success(userByEmail[0]);
             }
 
-            return ServiceResponse.success([]);
+            return ServiceResponse.success();
 
         } catch (error) {
             log(serviceName, "Error occured extracting user by email: " + JSON.stringify(error.message));
@@ -40,7 +40,7 @@ class UserService {
                 return ServiceResponse.success(userByPhone[0]);
             }
 
-            return ServiceResponse.success([]);
+            return ServiceResponse.success();
 
         } catch (error) {
             log(serviceName, "Error occured extracting user by phone: " + JSON.stringify(error.message));
@@ -50,7 +50,7 @@ class UserService {
 
     async insertUser(userData) {
         if (!userData) {
-            return ServiceResponse.fail("Invalid userData!");
+            return ServiceResponse.fail("Invalid user informations!");
         }
 
         const { firstName, lastName, email, phone, password } = userData;
@@ -65,15 +65,15 @@ class UserService {
             userData.password = hashedPassword;
 
             const insertedUser = await this.UserModel.insertUser(userData);
-            if (!insertedUser || insertedUser.length < 1 || !insertedUser[0] || !insertedUser[0].insertId) {
-                return ServiceResponse.fail("User could not be inserted. PLease try again!");
+            if (insertedUser && insertedUser.length > 0 && insertedUser[0] && insertedUser[0].insertId) {
+                return ServiceResponse.success(insertedUser);
             }
 
-            return ServiceResponse.success(insertedUser);
+            return ServiceResponse.fail("User could not be inserted. PLease try again!");
 
         } catch (error) {
             log(serviceName, "Error occured inserting user with userData: " + JSON.stringify(userData) + " | error: " + JSON.stringify(error.message));
-            return ServiceResponse.fail("Invalid phone!");
+            return ServiceResponse.fail("Invalid user informations!");
         }
     }
 }

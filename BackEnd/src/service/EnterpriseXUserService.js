@@ -19,7 +19,7 @@ class EnterpriseXUserService {
                 return ServiceResponse.success(userAndEnterprise[0]);
             }
 
-            return ServiceResponse.success([]);
+            return ServiceResponse.success();
 
         } catch (error) {
             log(serviceName, "Error occured extracting user and enterprise: " + JSON.stringify(error.message));
@@ -39,7 +39,7 @@ class EnterpriseXUserService {
                 return ServiceResponse.success(userAndEnterpriseByIdUser[0]);
             }
 
-            return ServiceResponse.success([]);
+            return ServiceResponse.success();
 
         } catch (e) {
             log(serviceName, "Error occured extracting user and enterprise by email: " + JSON.stringify(error.message));
@@ -57,12 +57,12 @@ class EnterpriseXUserService {
         if (!idEnterprise) { return ServiceResponse.fail("Invalid enterprise!"); }
 
         try {
-            const insertedUserEnterpriseLink = await this.EnterpriseXUserModel.insertUserXEnterprise(idUser, idEnterprise);
-            if (!insertedUserEnterpriseLink || insertedUserEnterpriseLink.length < 1 || !insertedUserEnterpriseLink[0] || !insertedUserEnterpriseLink[0].insertId) {
-                return ServiceResponse.fail("User can not be associated to the enterprise. PLease try again!");
+            const insertedUserEnterprise = await this.EnterpriseXUserModel.insertUserXEnterprise(idUser, idEnterprise);
+            if (insertedUserEnterprise && insertedUserEnterprise.length > 0 && insertedUserEnterprise[0] && insertedUserEnterprise[0].insertId) {
+                return ServiceResponse.success(insertedUserEnterprise);
             }
 
-            return ServiceResponse.success(insertedUserEnterpriseLink);
+            return ServiceResponse.fail("User can not be associated to the enterprise. PLease try again!");
 
         } catch (error) {
             log(serviceName, "Error occured assigning user and enterprise for idUser: " + JSON.stringify(idUser) + " | and email: " + JSON.stringify(email) + " | error: " + JSON.stringify(error.message));
