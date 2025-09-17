@@ -1,6 +1,6 @@
 class ServiceResponse {
-    constructor(data = null, error = null) {
-        this.data = data;
+    constructor(data = [], error = null) {
+        this.data = data ? data : [];
         this.error = error;
     }
 
