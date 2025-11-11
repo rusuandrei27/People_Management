@@ -107,9 +107,3 @@ body::before {
     color: #666;
     opacity: 0.6;
 }
-
-input,
-textarea,
-select {
-    font-size: 16px;
-}
