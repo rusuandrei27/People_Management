@@ -2,6 +2,7 @@ require("./utils/logger");
 const express = require('express');
 const authRoutes = require('./route/AuthRoute');
 const getItemsRoutes = require('./route/GetItemsRoute');
+const revenuesRoutes = require('./route/RevenueRoute');
 
 const cors = require('cors');
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/getItems', getItemsRoutes);
+app.use('/revenue', revenuesRoutes);
 
 const port = 3000;
 

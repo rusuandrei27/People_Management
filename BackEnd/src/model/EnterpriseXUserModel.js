@@ -10,8 +10,12 @@ class EnterpriseXUserModel {
     }
 
     getUserAndEnterpriseByEmail(email) {
-        const sql = `select exu.idUser, exu.idEnterprise, exu.isActive from enterpriseXuser as exu
+        const sql = `select exu.idEnterpriseXuser, exu.idUser, exu.idEnterprise, exu.isActive, a.street, a.streetNo, c.name as cityName, r.name as roleName, u.firstName from enterpriseXuser as exu
                      inner join user as u on u.idUser = exu.idUser
+                     left join role as r on r.idRole = exu.idRole
+                     left join enterprise as e on e.idEnterprise = exu.idEnterprise
+                     left join address as a on a.idAddress = e.idAddress
+                     left join city as c on c.idCity = a.idCity
                      where u.email = ? ;`;
 
         return db.execute(sql, [email]);
