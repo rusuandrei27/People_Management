@@ -16,7 +16,7 @@ app.use('/api/auth', authRoutes);
 app.use('/getItems', getItemsRoutes);
 app.use('/revenue', revenuesRoutes);
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.listen(port, "localhost", () => {
   log("main.js", "Server started listening on port: " + port);
