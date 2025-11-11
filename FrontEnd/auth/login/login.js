@@ -84,15 +84,33 @@ $("#login-btn").dxButton({
         }
 
         const idUser = loginResponse.data ? loginResponse.data.idUser : null;
+        const idEnterpriseXuser = loginResponse.data ? loginResponse.data.idEnterpriseXuser : null;
         const nextPage = loginResponse.data ? loginResponse.data.nextPage : null;
+        const token = loginResponse.data ? loginResponse.data.token : null;
+        const firstName = loginResponse.data ? loginResponse.data.firstName : null;
+        const cityName = loginResponse.data ? loginResponse.data.cityName : null;
+        const street = loginResponse.data ? loginResponse.data.street : null;
+        const streetNo = loginResponse.data ? loginResponse.data.streetNo : null;
 
         if (!idUser || !nextPage) {
             DevExpress.ui.notify("You can not login at this time. Please try again later or contact platform administrator!", "warning", 2000);
             return;
         }
 
-        sessionStorage.setItem("userData", JSON.stringify({ "idUser": idUser, "email": fields[0].option("value") }));
-        window.location.href = '../' + nextPage + "/" + nextPage + ".html";
+        localStorage.setItem("userData", JSON.stringify(
+            {
+                "idUser": idUser,
+                "idEnterpriseXuser": idEnterpriseXuser,
+                "email": fields[0].option("value"),
+                "token": token,
+                "firstName": firstName,
+                "cityName": cityName,
+                "street": street,
+                "streetNo": streetNo
+            }
+        ));
+
+        window.location.href = nextPage;
     }
 });
 

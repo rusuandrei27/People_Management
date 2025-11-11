@@ -11,10 +11,11 @@ class ApiClient {
         ApiClient.instance = this;
     }
 
-    async request(endpoint, method = "GET", body = null) {
+    async request(endpoint, method = "GET", body = null, token = null) {
         const options = {
             method,
             headers: {
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
         };
@@ -44,20 +45,20 @@ class ApiClient {
         };
     }
 
-    get(endpoint) {
-        return this.request(endpoint, "GET");
+    get(endpoint, token) {
+        return this.request(endpoint, "GET", null, token);
     }
 
-    post(endpoint, body) {
-        return this.request(endpoint, "POST", body);
+    post(endpoint, body, token) {
+        return this.request(endpoint, "POST", body, token);
     }
 
-    put(endpoint, body) {
-        return this.request(endpoint, "PUT", body);
+    put(endpoint, body, token) {
+        return this.request(endpoint, "PUT", body, token);
     }
 
-    delete(endpoint) {
-        return this.request(endpoint, "DELETE");
+    delete(endpoint, token) {
+        return this.request(endpoint, "DELETE", token);
     }
 }
 

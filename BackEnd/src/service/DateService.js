@@ -42,6 +42,14 @@ class DateService {
 
         return `${year}-${month}-${day} ${hour}:${minute}:${second}:${milisecond}`;
     }
+
+    static convertISODateToMySQL(date) {
+        if (!date) {
+            return;
+        }
+
+        return date.slice(0, 19).replace('T', ' ');
+    }
 }
 
 module.exports = DateService;

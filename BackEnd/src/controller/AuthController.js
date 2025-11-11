@@ -1,5 +1,6 @@
 const scriptName = "AuthController.js";
 const FEPages = require('../config/FEPages');
+const Roles = require('../config/Roles');
 const UserService = require('../service/UserService');
 const EnterpriseXUserService = require('../service/EnterpriseXUserService');
 const EmailService = require('../service/EmailService');
@@ -59,7 +60,7 @@ class AuthController {
             sentOTPMails.set(email, { otp, expiresAt });
 
             log(scriptName, "Function 'sendRegisterEmail' | Ended successfully with body: " + JSON.stringify(req.body));
-            res.status(200).json({ message: 'Register Mail Sent Successfully' });
+            return res.status(200).json({ message: 'Register Mail Sent Successfully' });
 
         } catch (error) {
             log(scriptName, "Function 'sendRegisterEmail' | " + JSON.stringify(req.body) + " | ended in error: " + JSON.stringify(error.message));
@@ -115,7 +116,7 @@ class AuthController {
 
             if (!insertedUserInfo || insertedUserInfo.error || !insertedUserInfo.data) {
                 log(scriptName, "Function 'insertUser' | user could not be inserted | " + JSON.stringify(req.body) + " | insertedUserInfo: " + JSON.stringify(insertedUserInfo));
-                res.status(500).json({ error: insertedUserInfo.error ? insertedUserInfo.error : 'User could not be inserted!' });
+                return res.status(500).json({ error: insertedUserInfo.error ? insertedUserInfo.error : 'User could not be inserted!' });
             }
 
             sentOTPMails.delete(email);
@@ -125,7 +126,7 @@ class AuthController {
 
         } catch (error) {
             log(scriptName, "Function 'insertUser' | " + JSON.stringify(req.body) + " | ended in error: " + JSON.stringify(error.message));
-            res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
+            return res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
         }
     }
 
@@ -157,7 +158,7 @@ class AuthController {
             const insertUserXEnterprise = await EnterpriseXUserService.insertUserXEnterprise(req.body);
             if (!insertUserXEnterprise || insertUserXEnterprise.error || !insertUserXEnterprise.data) {
                 log(scriptName, "Function 'assignUserToEnterprise' | user could not be assigned to this enterprise | " + JSON.stringify(req.body) + " | insertUserXEnterprise: " + JSON.stringify(insertUserXEnterprise));
-                res.status(500).json({ error: insertUserXEnterprise.error ? insertUserXEnterprise.error : 'User could not be assigned to this entity!' });
+                return res.status(500).json({ error: insertUserXEnterprise.error ? insertUserXEnterprise.error : 'User could not be assigned to this entity!' });
             }
 
             log(scriptName, "Function 'assignUserToEnterprise' | Ended successfully with body: " + JSON.stringify(req.body));
@@ -165,7 +166,7 @@ class AuthController {
 
         } catch (error) {
             log(scriptName, "Function 'assignUserToEnterprise' | " + JSON.stringify(req.body) + " | ended in error: " + JSON.stringify(error.message));
-            res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
+            return res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
         }
     }
 
@@ -209,23 +210,47 @@ class AuthController {
                 return res.status(200).json({ "idUser": userByEmail.data[0].idUser, "nextPage": FEPages.waitingActivation });
             }
 
+            const roleName = filteredUserAndEnterpriseByEmail[0].roleName;
+            let nextPage = "";
+
+            switch (roleName) {
+                case Roles.employee:
+                    nextPage = FEPages.employeeMain;
+                    break;
+                case Roles.manager:
+                    nextPage = FEPages.managerMain;
+                    break;
+                case Roles.admin:
+                    nextPage = FEPages.adminMain;
+                    break;
+                case Roles.supervisor:
+                    nextPage = FEPages.supervisorMain;
+                    break;
+                default:
+                    log(scriptName, "Function 'login' | email: " + JSON.stringify(email) + " | roleName is not treated | roleName: " + JSON.stringify(roleName));
+                    return res.status(400).json({ error: "You can not login at this time. Try again later!" });
+            }
+
             log(scriptName, "Function 'login' | email: " + JSON.stringify(email) + " | passed all validations, generating jwt");
 
             const jwtSecret = process.env.JWT_SECRET;
-            const token = jwt.sign({ id: filteredUserAndEnterpriseByEmail[0].idUser, email: email }, jwtSecret, {
-                expiresIn: '48h'
-            });
+            const token = jwt.sign({ id: filteredUserAndEnterpriseByEmail[0].idUser, email: email, role: roleName }, jwtSecret);
 
-            log(scriptName, "Function 'login' | email: " + JSON.stringify(email) + " | Ended successfully!");
+            log(scriptName, "Function 'login' | email: " + JSON.stringify(email) + " | passed all validations, jwt successfully generated | Ended successfully.");
             return res.status(200).json({
                 "idUser": filteredUserAndEnterpriseByEmail[0].idUser,
+                "idEnterpriseXuser": filteredUserAndEnterpriseByEmail[0].idEnterpriseXuser,
+                "firstName": filteredUserAndEnterpriseByEmail[0].firstName,
+                "cityName": filteredUserAndEnterpriseByEmail[0].cityName,
+                "street": filteredUserAndEnterpriseByEmail[0].street,
+                "streetNo": filteredUserAndEnterpriseByEmail[0].streetNo,
                 "token": token,
-                "nextPage": FEPages.enterprise
+                "nextPage": nextPage
             });
 
         } catch (error) {
             log(scriptName, "Function 'login' | email: " + JSON.stringify(req.body.email) + " | ended in error: " + JSON.stringify(error.message));
-            res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
+            return res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
         }
     }
 }

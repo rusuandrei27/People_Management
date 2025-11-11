@@ -64,7 +64,6 @@ async function applyFormLogic() {
     blockUserInterface();
 
     const enterprises = await api.get("getItems/getAllEnterprises");
-    console.log(enterprises)
 
     unblockUserInterface();
 
