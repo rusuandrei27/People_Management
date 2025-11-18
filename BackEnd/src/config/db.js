@@ -10,6 +10,7 @@ const pool = mysql.createPool({
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
+    timezone: 'Z',
     typeCast: function (field, next) {
         if (field.type === 'BIT' && field.length === 1) {
             const bit = field.buffer();

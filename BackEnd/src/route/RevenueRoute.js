@@ -8,5 +8,7 @@ const verifyRole = require('../middlewares/verifyRole');
 
 router.get('/getRevenues', verifyToken, verifyRole([Roles.admin, Roles.manager, Roles.supervisor, Roles.employee]), RevenuesController.getRevenues);
 router.post('/insertRevenue', verifyToken, verifyRole([Roles.admin, Roles.manager, Roles.supervisor, Roles.employee]), RevenuesController.insertRevenue);
+router.post('/updateRevenue', verifyToken, verifyRole([Roles.admin, Roles.manager, Roles.supervisor, Roles.employee]), RevenuesController.updateRevenue);
+
 
 module.exports = router;

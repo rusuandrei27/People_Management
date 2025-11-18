@@ -180,21 +180,71 @@ function showDashboard() {
         ],
         summary: {
             totalItems: [{
-                column: "cash",
-                summaryType: "sum",
+                showInColumn: "cash",
+                name: "cash",
+                summaryType: "custom",
                 displayFormat: "Total cash: {0}",
                 precision: 2
-
             }, {
-                column: "card",
-                summaryType: "sum",
+                showInColumn: "card",
+                name: "card",
+                summaryType: "custom",
                 displayFormat: "Total card: {0}",
                 precision: 2
             }, {
-                column: "nbClients",
-                summaryType: "sum",
+                showInColumn: "nbClients",
+                name: "nbClients",
+                summaryType: "custom",
                 displayFormat: "Total clients: {0}",
-            }]
+            }],
+            calculateCustomSummary: function (options) {
+                if (options.name == "cash") {
+                    switch (options.summaryProcess) {
+                        case "start":
+                            options.totalValue = 0;
+                            break;
+                        case "calculate":
+                            if (options.value.isActive) {
+                                options.totalValue = options.totalValue + options.value.cash;
+                            }
+                            break;
+                        case "finalize":
+                            break;
+                    }
+                }
+
+                if (options.name == "card") {
+                    switch (options.summaryProcess) {
+                        case "start":
+                            options.totalValue = 0;
+                            break;
+                        case "calculate":
+                            if (options.value.isActive) {
+                                options.totalValue = options.totalValue + options.value.card;
+                            }
+                            break;
+                        case "finalize":
+                            break;
+                    }
+                }
+
+                if (options.name == "nbClients") {
+                    switch (options.summaryProcess) {
+                        case "start":
+                            options.totalValue = 0;
+                            break;
+                        case "calculate":
+                            if (options.value.isActive) {
+                                options.totalValue = options.totalValue + options.value.nbClients;
+                            }
+                            break;
+                        case "finalize":
+                            break;
+                    }
+                }
+
+
+            }
         },
         export: {
             enabled: true,
@@ -301,15 +351,27 @@ function showDashboard() {
                 return;
             }
 
-            if (newData.startDate > newData.endDate) {
+            let startDate = new Date(newData.startDate);
+            let endDate = new Date(newData.endDate);
+
+            if (startDate > endDate) {
                 DevExpress.ui.notify("Start Date is grater than End Date!", "error", 3000);
+                return;
+            }
+
+            if (
+                startDate.getFullYear() != endDate.getFullYear()
+                || startDate.getMonth() != endDate.getMonth()
+                || startDate.getDate() != endDate.getDate()
+            ) {
+                DevExpress.ui.notify("You can not add records on multiple days!", "error", 3000);
                 return;
             }
 
             const revenue = {
                 idEnterpriseXuser: savedUserData.idEnterpriseXuser,
-                startDate: encodeURIComponent(new Date(newData.startDate).toISOString()),
-                endDate: encodeURIComponent(new Date(newData.endDate).toISOString()),
+                startDate: encodeURIComponent(startDate.toISOString()),
+                endDate: encodeURIComponent(endDate.toISOString()),
                 cash: newData.cash ? newData.cash : 0,
                 card: newData.card ? newData.card : 0,
                 note: newData.note ? newData.note : null,
@@ -360,11 +422,43 @@ function showDashboard() {
                 return;
             }
 
-            // call post api - to be done
+            if (!e.newData || Object.keys(e.newData).length < 1) {
+                DevExpress.ui.notify("No modifications saved!", "warning", 3000);
+                e.component.cancelEditData();
+                return;
+            }
 
-            console.log(e)
+            const updateData = {
+                idRevenue: idRevenue,
+                revenue: e.newData
+            };
+            const updatedRevenue = await api.post("revenue/updateRevenue", updateData, savedUserData.token);
 
-            return;
+            if (!updatedRevenue) {
+                DevExpress.ui.notify("Revenue could not be updated! Please try again!", "warning", 2000);
+                return;
+            }
+
+            if (updatedRevenue.errorMessage) {
+                DevExpress.ui.notify(updatedRevenue.errorMessage, "warning", 2000);
+                return;
+            }
+
+            if (!updatedRevenue.ok) {
+                DevExpress.ui.notify("Server could not be reached! Try again later!", "warning", 2000);
+                return;
+            }
+
+            const affectedRows = updatedRevenue.data ? updatedRevenue.data.affectedRows : null;
+
+            if (!affectedRows) {
+                DevExpress.ui.notify("You can not update this record now. Try again later!", "warning", 2000);
+                return;
+            }
+
+            DevExpress.ui.notify("Revenue sucessfully updated!", "success", 3000);
+            e.component.cancelEditData();
+            modifyRevenueGridDataSource(startDateRevenueValue, endDateRevenueValue);
         }
     }).dxDataGrid("instance");
 

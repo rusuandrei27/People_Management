@@ -68,6 +68,29 @@ class RevenueService {
             return ServiceResponse.fail("Invalid user informations!");
         }
     }
+
+    async updateRevenue(revenue, idRevenue) {
+        if (!revenue || !idRevenue) {
+            return ServiceResponse.fail("Invalid revenue update data!");
+        }
+
+        try {
+            const updatedRevenue = await this.RevenueModel.updateRevenue(revenue, idRevenue);
+            if (updatedRevenue && updatedRevenue[0] && updatedRevenue[0].affectedRows == 1) {
+                return ServiceResponse.success(updatedRevenue[0]);
+            }
+
+            if (!updatedRevenue[0].affectedRows) {
+                return ServiceResponse.fail("This revenue does not exist in database!");
+            }
+
+            return ServiceResponse.fail("Revenue could not be updated. Please try again!");
+
+        } catch (error) {
+            log(serviceName, "Error occured updating revenue with revenue: " + JSON.stringify(revenue) + " | error: " + JSON.stringify(error.message));
+            return ServiceResponse.fail("Invalid revenue informations!");
+        }
+    }
 }
 
 module.exports = new RevenueService();

@@ -107,7 +107,34 @@ class RevenueController {
     }
 
     async updateRevenue(req, res) {
+        try {
+            log(scriptName, "Function 'updateRevenue' | Started with body: " + JSON.stringify(req.body));
 
+            let { idRevenue, revenue } = req.body;
+
+            if (!idRevenue) {
+                return res.status(400).json({ error: "Invalid revenue identifier!" });
+            }
+
+            if (!revenue || Object.keys(revenue).length < 1) {
+                return res.status(400).json({ error: "Invalid revenue values!" });
+            }
+
+            log(scriptName, "Function 'updateRevenue' | all validations passed - begin updating revenue | " + JSON.stringify(req.body));
+            const updatedRevenueInfo = await RevenueService.updateRevenue(revenue, idRevenue);
+
+            if (!updatedRevenueInfo || updatedRevenueInfo.error || !updatedRevenueInfo.data) {
+                log(scriptName, "Function 'updateRevenue' | revenue could not be updated | " + JSON.stringify(req.body) + " | updatedRevenueInfo: " + JSON.stringify(updatedRevenueInfo));
+                return res.status(500).json({ error: updatedRevenueInfo.error ? updatedRevenueInfo.error : 'Revenue could not be updated! Try again later!' });
+            }
+
+            log(scriptName, "Function 'updateRevenue' | Ended successfully with body: " + JSON.stringify(req.body));
+            return res.status(200).json(updatedRevenueInfo.data);
+
+        } catch (error) {
+            log(scriptName, "Function 'updateRevenue' | " + JSON.stringify(req.body) + " | ended in error: " + JSON.stringify(error.message));
+            return res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
+        }
     }
 }
 
