@@ -1,4 +1,4 @@
-import api from "./ApiClient.js";
+import api from "../../ApiClient.js";
 
 $("#email").dxTextBox({
     placeholder: "Email",

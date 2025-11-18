@@ -465,7 +465,7 @@ function goToLoginPage(title, message) {
                 text: "Ok",
                 onClick: () => {
                     localStorage.clear();
-                    window.location.href = "/FrontEnd/auth/login/login.html";
+                    window.location.href = "../../index.html";
                 },
                 type: "default",
                 stylingMode: "contained"
