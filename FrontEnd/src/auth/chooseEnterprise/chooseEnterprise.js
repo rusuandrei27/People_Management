@@ -143,8 +143,8 @@ async function applyFormLogic() {
 
         showConfirmationMessage("Success!", "You have been succesfully added to the selected enterprise. You should contact your manager in order to activate your account. Thank you for using Men Code Employee Management Platform.",
             function () {
-                sessionStorage.clear();
-                window.location.href = '../login/login.html';
+                localStorage.clear();
+                window.location.href = '../../index.html';
             }
         ).show();
     }

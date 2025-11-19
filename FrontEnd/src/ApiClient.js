@@ -11,7 +11,7 @@ class ApiClient {
         ApiClient.instance = this;
     }
 
-    async request(endpoint, method = "GET", body = null, token = null) {
+    async request(endpoint, method = "GET", body = null, token = null, enableCache = null) {
         const options = {
             method,
             headers: {
@@ -19,6 +19,10 @@ class ApiClient {
                 "Content-Type": "application/json",
             },
         };
+
+        if (enableCache) {
+            options.cache = "default";
+        }
 
         if (body) {
             options.body = JSON.stringify(body);
@@ -45,8 +49,8 @@ class ApiClient {
         };
     }
 
-    get(endpoint, token) {
-        return this.request(endpoint, "GET", null, token);
+    get(endpoint, token, enableCache) {
+        return this.request(endpoint, "GET", null, token, enableCache);
     }
 
     post(endpoint, body, token) {

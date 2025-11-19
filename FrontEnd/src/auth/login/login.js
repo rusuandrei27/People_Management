@@ -103,6 +103,7 @@ function showLogin() {
             }
 
             const idUser = loginResponse.data ? loginResponse.data.idUser : null;
+            const idEnterprise = loginResponse.data ? loginResponse.data.idEnterprise : null;
             const idEnterpriseXuser = loginResponse.data ? loginResponse.data.idEnterpriseXuser : null;
             const nextPage = loginResponse.data ? loginResponse.data.nextPage : null;
             const token = loginResponse.data ? loginResponse.data.token : null;
@@ -119,6 +120,7 @@ function showLogin() {
             localStorage.setItem("userData", JSON.stringify(
                 {
                     "idUser": idUser,
+                    "idEnterprise": idEnterprise,
                     "idEnterpriseXuser": idEnterpriseXuser,
                     "dashboard": nextPage,
                     "email": fields[0].option("value"),

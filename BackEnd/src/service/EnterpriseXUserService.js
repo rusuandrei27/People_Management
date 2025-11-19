@@ -47,6 +47,26 @@ class EnterpriseXUserService {
         }
     }
 
+    async getUsersFromEnterprise(idEnterprise) {
+        if (!idEnterprise) {
+            return ServiceResponse.fail("Invalid enterprise");
+        }
+
+        try {
+            const usersFromEnterprise = await this.EnterpriseXUserModel.getUsersFromEnterprise(idEnterprise);
+
+            if (usersFromEnterprise && usersFromEnterprise.length > 0 && usersFromEnterprise[0] && usersFromEnterprise[0].length > 0) {
+                return ServiceResponse.success(usersFromEnterprise[0]);
+            }
+
+            return ServiceResponse.success();
+
+        } catch (e) {
+            log(serviceName, "Error occured extracting users from enterprise: " + JSON.stringify(error.message));
+            return ServiceResponse.fail("Invalid enterprise!");
+        }
+    }
+
     async insertUserXEnterprise(userData) {
         if (!userData) {
             return ServiceResponse.fail("Invalid user informations!");

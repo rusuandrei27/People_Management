@@ -239,6 +239,7 @@ class AuthController {
             log(scriptName, "Function 'login' | email: " + JSON.stringify(email) + " | passed all validations, jwt successfully generated | Ended successfully.");
             return res.status(200).json({
                 "idUser": filteredUserAndEnterpriseByEmail[0].idUser,
+                "idEnterprise": filteredUserAndEnterpriseByEmail[0].idEnterprise,
                 "idEnterpriseXuser": filteredUserAndEnterpriseByEmail[0].idEnterpriseXuser,
                 "firstName": filteredUserAndEnterpriseByEmail[0].firstName,
                 "cityName": filteredUserAndEnterpriseByEmail[0].cityName,

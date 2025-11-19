@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Men Code - Employee</title>
+
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.1.4/css/dx.light.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.1.4/js/dx.all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.4.0/polyfill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.0.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.1.1/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.2/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="../../blackDevExtremeTheme.css" />
+    <link rel="stylesheet" href="./dashboard.css" />
+</head>
+
+<body>
+    <div class="dashboard-wrap">
+
+        <header class="topbar">
+            <div class="brand">
+                <div class="burger-menu" id="burgerBtn">☰</div>
+                <div class="brand-row">
+                    <div class="brand-text">
+                        <div class="brand-name">Men Code</div>
+                        <div class="brand-sub" id="salon-address"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="user-menu-container">
+                <div id="greeting" class="greeting">Hello, <strong>User</strong></div>
+            </div>
+        </header>
+        <div class="overlay" id="overlay"></div>
+        <div class="burger-dropdown" id="burgerDropdown">
+            <ul>
+                <li id="myRevenues">My Revenues</li>
+                <li id="userStatistics">Employee Statistics</li>
+                <li id="userConfiguration">Employee Configuration</li>
+                <li id="logout">Logout</li>
+                <li id="reports" class="disabled">Reports</li>
+            </ul>
+        </div>
+        <main class="main-area">
+            <section class="cards-row">
+                <div class="card animated-card" id="summary-card">
+                    <div class="card-title">Total Revenue</div>
+                    <div class="card-value" id="total">0 RON</div>
+                    <div class="card-sub">Cash: <span id="cash">0</span></div>
+                    <div class="card-sub">Card: <span id="card">0</span></div>
+                    <div class="card-sub">Clients: <span id="clients">0</span></div>
+                </div>
+
+                <div class="card animated-card" id="summary-card-spendings">
+                    <div class="card-title">Total Spendings</div>
+                    <div class="card-value" id="today-spendings-total">0 RON</div>
+                </div>
+            </section>
+
+            <section class="grid-section">
+                <div class="animated-card title-container">
+                    <div class="section-title">Revenue</div>
+                    <div class="grid-header">
+                        <div class="grid-title">Analysis Period</div>
+                        <div class="date-range">
+                            <div id="startDateRevenue"></div>
+                            <div id="endDateRevenue"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="gridContainerRevenue"></div>
+            </section>
+
+            <section class="grid-section">
+                <div class="title-container animated-card">
+                    <div class="section-title">Spendings</div>
+                    <div class="grid-header">
+                        <div class="grid-title"> Analysis Period</div>
+                        <div id="dateRangeSpendings"></div>
+                    </div>
+                </div>
+                <div id="gridContainerSpendings"></div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div>Powered by Rusu Software</div>
+        </footer>
+    </div>
+
+    <script type="module" src="./dashboard.js"></script>
+</body>
+
+</html>

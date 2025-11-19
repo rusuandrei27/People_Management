@@ -28,6 +28,16 @@ class EnterpriseXUserModel {
         return db.execute(sql, [idUser, idEnterprise]);
     }
 
+    getUsersFromEnterprise(idEnterprise) {
+        const sql = `select exu.idUser, exu.idEnterprise, exu.isActive, u.firstName, u.lastName, r.idRole, r.name as roleName, uc.revenuePercentage, uc.clientDeduction, uc.employmentContractDeduction from enterpriseXuser as exu
+                     inner join user as u on u.idUser = exu.idUser
+                     left join role as r on r.idRole = exu.idRole
+                     left join userConfiguration as uc on uc.idUserConfiguration = exu.idUserConfiguration
+                     where idEnterprise = ?;`;
+
+        return db.execute(sql, [idEnterprise]);
+    }
+
     insertUserXEnterprise(idUser, idEnterprise) {
         const sql = `insert into enterpriseXuser (idUser, idEnterprise, idRole) values (?, ?, (SELECT idRole FROM role WHERE name = 'Employee'));`;
 
