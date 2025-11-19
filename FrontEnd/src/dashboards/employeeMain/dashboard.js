@@ -40,7 +40,7 @@ function showDashboard() {
     // logout functionality:
     $("#logout").on("click", function () {
         localStorage.clear();
-        window.location.href = "/FrontEnd/auth/login/login.html";
+        window.location.href = "../../index.html";
     });
 
     // name and address:
