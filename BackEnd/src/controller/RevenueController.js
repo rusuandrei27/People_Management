@@ -102,7 +102,7 @@ class RevenueController {
 
         } catch (error) {
             log(scriptName, "Function 'insertRevenue' | " + JSON.stringify(req.body) + " | ended in error: " + JSON.stringify(error.message));
-            return res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
+            return res.status(500).json({ error: "The service could not be reached at this moment. Please try again later!" });
         }
     }
 
@@ -133,7 +133,7 @@ class RevenueController {
 
         } catch (error) {
             log(scriptName, "Function 'updateRevenue' | " + JSON.stringify(req.body) + " | ended in error: " + JSON.stringify(error.message));
-            return res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
+            return res.status(500).json({ error: "The service could not be reached at this moment. Please try again later!" });
         }
     }
 }

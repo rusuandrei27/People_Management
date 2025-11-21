@@ -2,15 +2,16 @@ const db = require('../config/db');
 
 class RoleModel {
 
-    constructor(name = null) {
+    constructor(connection = null, name = null) {
         this.name = name;
+        this.connection = connection ? connection : db;
     }
 
     getAllRoles() {
         const sql = `select idRole, name from role
                      order by idRole asc`;
 
-        return db.execute(sql);
+        return this.connection.execute(sql);
     }
 }
 

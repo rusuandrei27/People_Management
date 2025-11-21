@@ -19,24 +19,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function showDashboard() {
 
-    let roles = await api.get("getItems/getAllRoles", savedUserData.token, true); // also for validating if user should see this page.
-
+    let roles = savedUserData.roles;
     if (!roles) {
-        goToLoginPage("You have no rights to access this page!", "Please login again in the platform. You have no rights to access this page!").show();
-        return;
-    }
+        roles = await api.get("getItems/getAllRoles", savedUserData.token, true);
 
-    if (roles.errorMessage) {
-        goToLoginPage("You have no rights to access this page!", "Please login again in the platform. You have no rights to access this page!").show();
-        return;
-    }
+        if (!roles) {
+            goToLoginPage("You have no rights to access this page!", "Please login again in the platform. You have no rights to access this page!").show();
+            return;
+        }
 
-    if (!roles.ok || !roles.data || roles.data.length < 1) {
-        DevExpress.ui.notify("The server could not be reached. Please contact administrator!", "error", 2000);
-        return;
-    }
+        if (roles.errorMessage) {
+            goToLoginPage("You have no rights to access this page!", "Please login again in the platform. You have no rights to access this page!").show();
+            return;
+        }
 
-    roles = roles.data;
+        if (!roles.ok || !roles.data || roles.data.length < 1) {
+            DevExpress.ui.notify("The server could not be reached. Please contact administrator!", "error", 2000);
+            return;
+        }
+
+        roles = roles.data;
+        savedUserData.roles = roles;
+        localStorage.setItem("userData", JSON.stringify(savedUserData));
+    }
 
     // show or hide overlay:
     const burgerBtn = document.getElementById("burgerBtn");
@@ -96,7 +101,7 @@ async function showDashboard() {
     // display employee grid:
     const employeesGridInstance = $("#gridContainerEmployees").dxDataGrid({
         dataSource: [],
-        key: "idEmployeeXUser",
+        key: "idEnterpriseXuser",
         noDataText: "No registered users",
         columnAutoWidth: true,
         wordWrapEnabled: true,
@@ -115,9 +120,25 @@ async function showDashboard() {
                     displayExpr: "name"
                 }
             },
-            { dataField: "clientDeduction", caption: "Client Deduction", dataType: "number", minWidth: 130 },
-            { dataField: "revenuePercentage", caption: "Revenue Percentage", dataType: "number", minWidth: 130 },
-            { dataField: "employmentContractDeduction", caption: "Employment Contract Deduction", dataType: "number", defaultValue: "0", minWidth: 130 },
+            {
+                dataField: "clientDeduction", caption: "Client Deduction", dataType: "number", minWidth: 130,
+                editorOptions: {
+                    min: 0
+                }
+            },
+            {
+                dataField: "revenuePercentage", caption: "Revenue Percentage %", dataType: "number", minWidth: 130,
+                editorOptions: {
+                    min: 0,
+                    max: 100
+                }
+            },
+            {
+                dataField: "employmentContractDeduction", caption: "Employment Contract Deduction", dataType: "number", defaultValue: "0", minWidth: 130,
+                editorOptions: {
+                    min: 0
+                }
+            },
             { dataField: "isActive", caption: "Is Active Employee ?", dataType: "boolean", defaultValue: "true", width: "100" },
         ],
         editing: {

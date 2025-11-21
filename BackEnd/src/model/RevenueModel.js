@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 class RevenueModel {
 
-    constructor(startDate = null, endDate = null, cash = 0, card = 0, nbClients = 0, note = null, isActive = true, idEnterpriseXuser = null) {
+    constructor(connection = null, startDate = null, endDate = null, cash = 0, card = 0, nbClients = 0, note = null, isActive = true, idEnterpriseXuser = null) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.cash = cash;
@@ -11,6 +11,7 @@ class RevenueModel {
         this.note = note;
         this.isActive = isActive;
         this.idEnterpriseXuser = idEnterpriseXuser;
+        this.connection = connection ? connection : db;
     }
 
     getRevenues(idEnterpriseXuser, startDate, endDate) {
@@ -18,7 +19,7 @@ class RevenueModel {
                      where idEnterpriseXuser = ? and Date(startDate) >= Date(?) and Date(endDate) <= Date(?)
                      order by startDate desc;`;
 
-        return db.execute(sql, [idEnterpriseXuser, startDate, endDate]);
+        return this.connection.execute(sql, [idEnterpriseXuser, startDate, endDate]);
     }
 
     insertRevenue(revenueData) {
@@ -26,13 +27,13 @@ class RevenueModel {
         const sql = `insert into revenue (startDate, endDate, cash, card, nbClients, note, isActive, idEnterpriseXuser)
                      values (?, ?, ?, ?, ?, ?, ?, ?)`;
 
-        return db.execute(sql, [startDate, endDate, cash, card, nbClients, note, isActive, idEnterpriseXuser]);
+        return this.connection.execute(sql, [startDate, endDate, cash, card, nbClients, note, isActive, idEnterpriseXuser]);
     }
 
     updateRevenue(updateObj, idRevenue) {
         const sql = `update revenue set ? where idRevenue = ?`;
 
-        return db.query(sql, [updateObj, idRevenue]);
+        return this.connection.query(sql, [updateObj, idRevenue]);
     }
 }
 

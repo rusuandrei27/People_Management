@@ -26,7 +26,7 @@ class GetItemsController {
 
         } catch (error) {
             log(scriptName, "Script finished in error:  " + JSON.stringify(error.message));
-            res.status(400).json({ error: error.message });
+            return res.status(500).json({ error: error.message });
         }
     };
 
@@ -54,7 +54,7 @@ class GetItemsController {
 
         } catch (error) {
             log(scriptName, "Script finished in error:  " + JSON.stringify(error.message));
-            res.status(400).json({ error: error.message });
+            return res.status(500).json({ error: error.message });
         }
     };
 }

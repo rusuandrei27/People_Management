@@ -126,7 +126,7 @@ class AuthController {
 
         } catch (error) {
             log(scriptName, "Function 'insertUser' | " + JSON.stringify(req.body) + " | ended in error: " + JSON.stringify(error.message));
-            return res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
+            return res.status(500).json({ error: "The service could not be reached at this moment. Please try again later!" });
         }
     }
 
@@ -166,7 +166,7 @@ class AuthController {
 
         } catch (error) {
             log(scriptName, "Function 'assignUserToEnterprise' | " + JSON.stringify(req.body) + " | ended in error: " + JSON.stringify(error.message));
-            return res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
+            return res.status(500).json({ error: "The service could not be reached at this moment. Please try again later!" });
         }
     }
 
@@ -251,7 +251,7 @@ class AuthController {
 
         } catch (error) {
             log(scriptName, "Function 'login' | email: " + JSON.stringify(req.body.email) + " | ended in error: " + JSON.stringify(error.message));
-            return res.status(400).json({ error: "The service could not be reached at this moment. Please try again later!" });
+            return res.status(500).json({ error: "The service could not be reached at this moment. Please try again later!" });
         }
     }
 }

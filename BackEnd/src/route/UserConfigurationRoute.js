@@ -7,5 +7,6 @@ const verifyToken = require('../middlewares/verifyToken');
 const verifyRole = require('../middlewares/verifyRole');
 
 router.get('/getUsersFromEnterprise', verifyToken, verifyRole([Roles.admin, Roles.manager]), UserConfigurationController.getUsersFromEnterprise);
+router.post('/updateUserFull', verifyToken, verifyRole([Roles.admin, Roles.manager]), UserConfigurationController.updateUserFull);
 
 module.exports = router;
