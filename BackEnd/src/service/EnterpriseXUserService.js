@@ -72,12 +72,13 @@ class EnterpriseXUserService {
             return ServiceResponse.fail("Invalid user informations!");
         }
 
-        const { idUser, idEnterprise } = userData;
+        let { idUser, idEnterprise, isActive } = userData;
         if (!idUser) { return ServiceResponse.fail("Invalid user!"); }
         if (!idEnterprise) { return ServiceResponse.fail("Invalid enterprise!"); }
+        isActive = isActive && (isActive == "1" || isActive == true) ? "1" : "0";
 
         try {
-            const insertedUserEnterprise = await this.EnterpriseXUserModel.insertUserXEnterprise(idUser, idEnterprise);
+            const insertedUserEnterprise = await this.EnterpriseXUserModel.insertUserXEnterprise(idUser, idEnterprise, isActive);
             if (insertedUserEnterprise && insertedUserEnterprise.length > 0 && insertedUserEnterprise[0] && insertedUserEnterprise[0].insertId) {
                 return ServiceResponse.success(insertedUserEnterprise);
             }

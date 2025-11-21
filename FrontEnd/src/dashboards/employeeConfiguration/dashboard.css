@@ -222,7 +222,7 @@ body::before {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.00));
     padding: 14px;
     border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 30px 40px rgba(0, 0, 0, 0.6);
 }
 
 .title-container {
@@ -284,8 +284,4 @@ body::before {
         gap: 12px;
         width: 100%;
     }
-}
-
-#gridContainerEmployees {
-    min-height: 40vh;
 }

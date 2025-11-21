@@ -38,10 +38,10 @@ class EnterpriseXUserModel {
         return db.execute(sql, [idEnterprise]);
     }
 
-    insertUserXEnterprise(idUser, idEnterprise) {
-        const sql = `insert into enterpriseXuser (idUser, idEnterprise, idRole) values (?, ?, (SELECT idRole FROM role WHERE name = 'Employee'));`;
+    insertUserXEnterprise(idUser, idEnterprise, isActive) {
+        const sql = `insert into enterpriseXuser (idUser, idEnterprise, isActive, idRole) values (?, ?, ?, (SELECT idRole FROM role WHERE name = 'Employee'));`;
 
-        return db.execute(sql, [idUser, idEnterprise]);
+        return db.execute(sql, [idUser, idEnterprise, isActive]);
     }
 }
 

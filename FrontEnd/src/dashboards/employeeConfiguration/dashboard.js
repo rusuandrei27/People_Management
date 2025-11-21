@@ -96,13 +96,11 @@ async function showDashboard() {
     // display employee grid:
     const employeesGridInstance = $("#gridContainerEmployees").dxDataGrid({
         dataSource: [],
-        minHeight: 900,
         key: "idEmployeeXUser",
         noDataText: "No registered users",
         columnAutoWidth: true,
         wordWrapEnabled: true,
         showBorders: true,
-        selection: { mode: "multiple" },
         showRowLines: true,
         paging: { pageSize: 10 },
         filterRow: { visible: true },

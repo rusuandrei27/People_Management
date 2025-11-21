@@ -112,6 +112,7 @@ async function applyFormLogic() {
         }
 
         savedUserData["idEnterprise"] = fields[0].option("value");
+        savedUserData["isActive"] = "0";
 
         blockUserInterface();
 
